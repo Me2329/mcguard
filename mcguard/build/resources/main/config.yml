@@ -1,0 +1,107 @@
+# ============================================================================
+#  McGuard configuration
+#
+#  Every threshold is exposed. Tuning an anticheat against your own players is
+#  not optional - the defaults here are a starting point chosen to UNDER-flag.
+#  Watch /mcguard status after opening your server and tighten from there.
+#
+#  Reload after editing with:  /mcguard reload
+# ============================================================================
+
+general:
+  # Master switch. false disables every check.
+  enabled: true
+  # Append flags to plugins/McGuard/violations.log (CSV).
+  logToFile: true
+  # Send flag messages to online players with the mcguard.admin permission.
+  notifyStaff: true
+  # Skip all checks for creative and spectator mode.
+  exemptCreative: true
+  # Skip all checks for operators. Recommended while tuning.
+  exemptOps: true
+  # Ignore checks for this long after login, in ms (chunk load + spawn
+  # teleports look exactly like a speed/flight cheat).
+  joinGraceMs: 5000
+  # Ignore movement checks for this long after any teleport / world change, ms.
+  teleportGraceMs: 3000
+
+# Violation levels decay over time; punishment escalates by total VL.
+violations:
+  # VL removed per second of clean play. Higher = more forgiving.
+  decayPerSecond: 0.25
+  # VL at which staff are notified.
+  warnThreshold: 10.0
+  # VL at which the player is kicked. 0 disables kicking.
+  kickThreshold: 35.0
+  # VL at which the player is banned. Requires banEnabled.
+  banThreshold: 100.0
+  # Allow McGuard to issue bans at banThreshold. If regulars accumulate VL
+  # during normal play, raise banThreshold or set this false until tuned.
+  banEnabled: true
+
+movement:
+  speedEnabled: true
+  # Baseline max horizontal blocks per tick. Vanilla sprint-jump peaks ~0.36.
+  baseLimitPerTick: 0.42
+  # Multiplier on top of all legitimate modifiers (ice, speed, depth strider).
+  tolerance: 1.35
+  # Consecutive movements a player must stay OVER the limit before flagging.
+  # A single tick over is almost always lag, a jump apex, or knockback.
+  minViolationStreak: 4
+  flightEnabled: true
+  # Consecutive airborne moves without descending before flagging (~4s).
+  maxAirTicks: 80
+  noFallEnabled: true
+  invalidMoveEnabled: true
+  # Blocks moved in one tick that can only be a teleport. Legit pearls and
+  # portals are excluded via teleport grace.
+  maxDeltaPerTick: 10.0
+
+combat:
+  reachEnabled: true
+  # Max attack distance in blocks. Vanilla is 3.0; 4.2 allows for latency.
+  maxSurvivalReach: 4.2
+  autoClickerEnabled: true
+  # Attacks per second above which a flag is raised. Skilled players reach 14-16.
+  maxCps: 20
+  # Minimum standard deviation between click intervals, ms. Humans are
+  # irregular; a macro is not. 0 disables rhythm analysis.
+  minDeviationMs: 8.0
+  killAuraEnabled: true
+  # Max angle in degrees between where the player looks and the entity they hit.
+  # 75 allows fast flicks + latency while still catching 360-degree auras.
+  maxHitAngle: 75.0
+  noSlowEnabled: true
+
+placement:
+  fastPlaceEnabled: true
+  # Max blocks placed per second before flagging. Fast scaffolding reaches 8-10.
+  maxPlacePerSecond: 12
+
+latency:
+  timerEnabled: true
+  # Max ratio of client action rate to the expected 20 t/s. 1.12 allows for
+  # network jitter while catching timer x1.2+ cheats.
+  maxRate: 1.12
+  # Widen movement/combat tolerances for high-ping players. Strongly
+  # recommended: the single biggest source of false positives.
+  lagCompensation: true
+  # Ping in ms above which lag compensation kicks in.
+  pingThresholdMs: 120
+
+world:
+  fastBreakEnabled: true
+  # Fraction of the theoretical break time that must elapse. 0.6 = breaking in
+  # 60% of expected time is allowed. Approximate on Bukkit (see README).
+  tolerance: 0.6
+  nukerEnabled: true
+  # Blocks broken per second before flagging. Efficiency V on netherrack >20.
+  maxBlocksPerSecond: 30
+  xrayEnabled: true
+  # Minimum valuable ores mined before the ratio is judged.
+  minOreSample: 24
+  # Max fraction of mined blocks that may be valuable ore before flagging.
+  # Natural strip-mining sits near 0.02-0.05.
+  maxOreRatio: 0.20
+  # How many recent block-breaks form the rolling sample window per player.
+  sampleWindow: 800

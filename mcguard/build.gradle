@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+}
+
+version = "${plugin_version}"
+group = "${plugin_group}"
+
+// The Paper/Spigot API for 1.20.1 targets Java 17. The server may run on a newer
+// JVM (Arclight here runs on 21) - that is fine and unrelated - but the bytecode
+// we emit must be 17 so it loads everywhere from 17 up.
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(17) }
+}
+
+repositories {
+    mavenCentral()
+    // Paper API + the Folia-compatible scheduler surface upstreamed into it.
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+}
+
+dependencies {
+    // compileOnly: the server already provides the API at runtime. Nothing from
+    // here is shaded into the jar, so the plugin stays tiny and has zero deps.
+    compileOnly "io.papermc.paper:paper-api:${paper_api_version}"
+}
+
+// Expand plugin.yml so the version lives in gradle.properties only.
+tasks.named('processResources', ProcessResources).configure {
+    var props = [
+        plugin_id      : plugin_id,
+        plugin_name    : plugin_name,
+        plugin_version : plugin_version,
+        plugin_author  : plugin_author,
+    ]
+    inputs.properties props
+    filesMatching('plugin.yml') { expand props }
+}
+
+tasks.named('jar', Jar).configure {
+    archiveBaseName = plugin_id
+}
+
+// Convenience: drop the built jar straight into the live server plugins folder.
+tasks.register('installToServer', Copy) {
+    dependsOn 'build'
+    from("${buildDir}/libs") { include "${plugin_id}-${plugin_version}.jar" }
+    into rootProject.file('../../server/plugins')
+    doLast { println "Installed ${plugin_id}-${plugin_version}.jar to server/plugins" }
+}

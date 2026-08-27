@@ -1,0 +1,25 @@
+name: ${plugin_name}
+version: '${plugin_version}'
+main: com.mcserver.mcguard.McGuardPlugin
+api-version: '1.20'
+# Declares that McGuard is safe under Folia's regionised threading model. On
+# non-Folia servers this key is simply ignored.
+folia-supported: true
+author: ${plugin_author}
+description: Lightweight server-side anticheat - 13 event-based checks with lag compensation. Runs on Spigot, Paper, Purpur, Folia and hybrids.
+website: https://modrinth.com/plugin/mcguard
+
+commands:
+  mcguard:
+    description: McGuard anticheat admin surface
+    usage: /mcguard <status|checks|vl|reset|exempt>
+    aliases: [mcg, anticheat]
+    permission: mcguard.admin
+
+permissions:
+  mcguard.admin:
+    description: Use /mcguard commands and receive staff violation alerts
+    default: op
+  mcguard.bypass:
+    description: Exempt the holder from every McGuard check
+    default: false
