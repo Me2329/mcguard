@@ -5,10 +5,6 @@ One jar runs on **CraftBukkit, Spigot, Paper, Purpur, Pufferfish, Folia**, and
 hybrids (**Arclight, Mohist**). No mixins, no packet interception, no NMS —
 players join with an unmodified client and nothing to break on the next update.
 
-> This is the **plugin** port of the McGuard Forge mod. Same 13 checks, same
-> violation-level model, rewritten against the Bukkit event API and made
-> Folia-safe.
-
 ---
 
 ## What it is — and honestly what it is not
